@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>BURBUJAS</title>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+
+<!-- BOTÓN FLOTANTE DE IA //Asistente IA-->
+
+<button id="aiButton" class="ai-button">
+  🤖 BURBUJITAI      
+</button>
+
+
+<!-- VENTANA DEL ASISTENTE -->
+
+<div id="aiChat" class="ai-chat hidden">
+
+  <div class="ai-header">
+
+    <div>
+      <strong>🤖 Asistente IA</strong>
+      <p>Consulta tus dudas del curso</p>
+    </div>
+
+    <button id="aiClose">
+      ✕
+    </button>
+
+  </div>
+
+
+  <div id="aiMessages" class="ai-messages">
+
+    <div class="ai-message bot">
+      ¡Hola! 👋 Soy BURBUJITAI el asistente de T.I.C. I y Programación.
+      ¿En qué puedo ayudarte?
+    </div>
+
+  </div>
+
+
+  <div class="ai-input-area">
+
+    <textarea
+      id="aiInput"
+      placeholder="Escribe tu pregunta..."
+    ></textarea>
+
+    <button id="aiSend">
+      Enviar
+    </button>
+
+  </div>
+
+</div>
+
+<body>
+
+  <!-- ENCABEZADO -->
+  <header class="topbar">
+
+    <div>
+      <h1>T.I.C. I</h1>
+
+      <p>
+        Tecnologías de la Información y la Comunicación I.
+      </p>
+
+    </div>
+
+    <button
+      id="logoutBtn"
+      class="ghost hidden">
+      Salir
+    </button>
+
+  </header>
+
+
+  <main class="container">
+
+
+    <!-- ============================= -->
+    <!-- LOGIN -->
+    <!-- ============================= -->
+
+    <section
+      id="loginSection"
+      class="card login-card">
+
+      <h2>Ingreso</h2>
+
+      <p>
+        Escribe tus datos para comenzar.
+      </p>
+
+
+      <label for="studentName">
+        Nombre completo:
+      </label>
+
+      <input
+        id="studentName"
+        type="text"
+        placeholder="Ej. Ana María García López">
+
+
+      <label for="studentGrade">
+        Grado
+      </label>
+
+      
+      <input
+        id="studentGrade"
+        type="text"
+        placeholder="Ej. 4to Diseño Gráfico">
+
+       
+       <label for="studentCode">
+        Clave
+      </label>
+      
+      <input
+      id="studentCode"
+      type="text"
+      placeholder="Ej. 2">
+
+      <label for="teacherName">
+        Profesor
+      </label>
+
+      <input
+      id="teacherName"
+      type="text"
+      placeholder="Ej. Julian Mendoza.">
+
+    
+      
+
+
+      <button
+        id="enterBtn"
+        class="primary">
+
+        Ingresar
+
+      </button>
+
+
+      <p
+        id="loginError"
+        class="error">
+      </p>
+
+    </section>
+
+
+
+    <section
+      id="dashboardSection"
+      class="hidden">
+
+
+      <div class="welcome card">
+
+        <div>
+
+          <h2 id="welcomeText">
+            ¡Hola!
+          </h2>
+
+          <p id="gradeText"></p>
+
+        </div>
+
+
+        <div class="score-box">
+
+          <span>
+            Mejor puntaje
+          </span>
+
+          <strong id="bestScore">
+            0%
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <h2 class="section-title">
+        Selecciona el tema de tu interés.
+      </h2>
+
+
+      <!-- TAREAS -->
+
+      <div class="subject-grid">
+
+
+      
+
+        <button
+          class="subject-card"
+          data-subject="tarea_1">
+
+          <span class="icon">
+            💻
+          </span>
+
+          <h3>
+            Tarea 1
+          </h3>
+
+          <p>
+            Software.
+          </p>
+
+        </button>
+
+
+
+        <button
+          class="subject-card"
+          data-subject="tarea_2">
+
+          <span class="icon">
+            💻
+          </span>
+
+          <h3>
+            Tarea 2
+          </h3>
+
+          <p>
+            Seguridad de la Información, Firmas Digitales y  Documentación Digital.
+          </p>
+
+        </button>
+
+
+
+
+        <button
+          class="subject-card"
+          data-subject="tarea_3">
+
+          <span class="icon">
+            💻
+          </span>
+
+          <h3>
+            Tarea 3
+          </h3>
+
+          <p>
+            Macros y Estadística..
+          </p>
+
+        </button>
+
+
+
+        <!-- TAREA 4 -->
+
+        <button
+          class="subject-card"
+          data-subject="tarea_4">
+
+          <span class="icon">
+            💻
+          </span>
+
+          <h3>
+            Tarea 4
+          </h3>
+
+          <p>
+            Proximamente.
+          </p>
+
+        </button>
+
+      </div>
+
+
+
+      <!-- HISTORIAL -->
+
+      <section class="card history">
+
+        <h3>
+          Últimos resultados
+        </h3>
+
+        <div id="historyList">
+
+          <p class="muted">
+            Aún no hay intentos.
+          </p>
+
+        </div>
+
+      </section>
+
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- MENÚ DE UNA TAREA -->
+    <!-- ============================= -->
+
+    <section
+      id="taskMenuSection"
+      class="card hidden">
+
+
+      <h2 id="taskMenuTitle">
+        Tarea
+      </h2>
+
+
+      <p id="taskMenuDescription">
+        Selecciona qué deseas realizar.
+      </p>
+
+
+
+      <div class="task-options">
+
+
+        <!-- CONTENIDO -->
+
+        <button
+          id="contentBtn"
+          class="option-card">
+
+          <span class="option-icon">
+            📒
+          </span>
+
+          <h3>
+            Contenido
+          </h3>
+
+          <p>
+            Consulta los temas y material de estudio.
+          </p>
+
+        </button>
+
+
+
+        <!-- EJERCICIOS -->
+
+        <button
+          id="exerciseBtn"
+          class="option-card">
+
+          <span class="option-icon">
+            💻
+          </span>
+
+          <h3>
+            Ejercicios
+          </h3>
+
+          <p>
+            Responde las preguntas interactivas.
+          </p>
+
+        </button>
+
+        <!-- Ejercicios Integradores-->
+
+        <button
+         id="integrativeBtn"
+        class="option-card">
+        <span class="option-icon">
+          🧩
+        </span>
+        
+        <h3>Ejercicios integradores</h3>
+        <p>
+          Responde preguntas abiertas y completa las actividades.
+        </p>
+      
+      </button>
+
+        <button id="spreadsheetBtn" class="option-card">
+          <span class="option-icon">📊</span>
+          <h3>Hoja de cálculo</h3>
+          <p>Practica fórmulas, tablas y gráficos.</p>
+        </button>
+
+
+
+      </div>
+
+
+
+      <button
+        id="taskBackBtn"
+        class="ghost">
+
+        Volver
+
+      </button>
+
+
+    </section>
+
+
+  <!-- EXCEL -->
+   <!-- =====================================================
+     TAREA 3 - HOJA DE CÁLCULO
+===================================================== -->
+
+<section id="spreadsheetSection" class="card hidden">
+
+  <div class="spreadsheet-header">
+
+    <div>
+      <h2>📊 Hoja de cálculo</h2>
+
+      <p>
+        Practica fórmulas como en Excel.
+      </p>
+    </div>
+
+    <button id="spreadsheetBackBtn" class="secondary-btn">
+      ← Volver
+    </button>
+
+  </div>
+
+
+    <!-- BARRA DE HERRAMIENTAS -->
+
+  <div class="spreadsheet-toolbar">
+
+    <button id="addRowBtn" class="primary-btn">
+      ➕ Agregar fila
+    </button>
+
+    <button id="addColumnBtn" class="primary-btn">
+      ➕ Agregar columna
+    </button>
+
+    <button id="clearSheetBtn" class="secondary-btn">
+      🗑️ Limpiar
+    </button>
+
+    <button id="calculateFormulaBtn" class="primary-btn">
+      🧮 Calcular
+    </button>
+
+  </div>
+
+
+  <!-- ÁREA DE LA HOJA -->
+
+  <div class="spreadsheet-wrapper">
+
+    <table id="spreadsheetTable">
+
+      <thead>
+
+        <tr id="spreadsheetHeaderRow">
+
+          <th>Fila</th>
+
+          <th>
+            <input
+              class="column-name"
+              value="A"
+              maxlength="10"
+            >
+          </th>
+
+          <th>
+            <input
+              class="column-name"
+              value="B"
+              maxlength="10"
+            >
+          </th>
+
+          <th>
+            <input
+              class="column-name"
+              value="C"
+              maxlength="10"
+            >
+          </th>
+
+        </tr>
+
+      </thead>
+
+      <tbody id="spreadsheetBody">
+      </tbody>
+
+    </table>
+
+  </div>
+
+
+  <!-- BARRA DE FÓRMULA -->
+
+  <div class="formula-area">
+
+    <label for="formulaInput">
+      Fórmula
+    </label>
+
+    <div class="formula-row">
+
+      <input
+        id="formulaInput"
+        type="text"
+        placeholder="Ejemplo: =SUMA(A1:B5)"
+      >
+
+      <button id="applyFormulaBtn">
+        ✓ Aplicar
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- RESULTADO -->
+
+  <div class="spreadsheet-result">
+
+    <span>Resultado:</span>
+
+    <strong id="formulaResult">
+      -
+    </strong>
+
+  </div>
+
+
+  <!-- FUNCIONES -->
+
+  <div class="formula-help">
+
+    <h3>Funciones disponibles</h3>
+
+    <div class="formula-buttons">
+
+      <button data-formula="SUMA">
+        SUMA
+      </button>
+
+      <button data-formula="PROMEDIO">
+        PROMEDIO
+      </button>
+
+      <button data-formula="MIN">
+        MIN
+      </button>
+
+      <button data-formula="MAX">
+        MAX
+      </button>
+
+      <button data-formula="SI">
+        SI
+      </button>
+
+      <button data-formula="SI_ANIDADO">
+        SI ANIDADO
+      </button>
+
+      <button data-formula="OPERACION">
+        + − × ÷
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- GRÁFICOS -->
+
+  <div class="chart-area">
+
+  <h3>Gráficos</h3>
+
+  <div class="formula-buttons">
+
+    <button
+      id="barChartBtn"
+      type="button">
+      📊 Barras
+    </button>
+
+    <button
+      id="lineChartBtn"
+      type="button">
+      📈 Líneas
+    </button>
+
+    <button
+      id="pieChartBtn"
+      type="button">
+      🍰 Pastel
+    </button>
+
+  </div>
+
+  <button
+  id="spreadsheetPdfBtn"
+  class="primary-btn"
+  type="button">
+
+  📄 Generar PDF del ejercicio
+
+</button>
+
+  <!-- ÁREA DONDE SE DIBUJARÁ EL GRÁFICO -->
+  <div class="chart-container">
+
+    <canvas id="spreadsheetChart"></canvas>
+
+  </div>
+
+</div>
+
+
+
+</section> <!-- ✅ cierre de spreadsheetSection -->
+
+<!-- ========================================= -->
+<!-- EJERCICIOS INTEGRADORES -->
+<!-- ========================================= -->
+
+<section id="integrativeSection" class="card hidden">
+  <div class="integrative-header">
+    <div>
+      <p class="subject-label">Ejercicios integradores</p>
+      <h2 id="integrativeTitle">Ejercicios integradores</h2>
+    </div>
+    <button id="integrativeBackBtn" class="ghost">Volver</button>
+  </div>
+
+  <div id="integrativeContainer"></div>
+
+  <div class="quiz-actions">
+    <button id="saveIntegrativeBtn" class="primary">Guardar respuestas</button>
+    <button id="integrativePdfBtn" class="ghost">Generar PDF</button>
+  </div>
+
+  <p id="integrativeMessage" class="integrative-message" aria-live="polite"></p>
+</section>
+
+
+<!-- ========================================= -->
+<!-- EJERCICIOS PRÁCTICOS -->
+<!-- ========================================= -->
+
+<section
+  id="practicalExercisesSection"
+  class="card hidden">
+
+  <div class="quiz-header">
+
+    <div>
+
+      <p
+        id="practicalExercisesSubject"
+        class="subject-label">
+      </p>
+
+      <h2>
+        Ejercicios prácticos
+      </h2>
+
+    </div>
+
+  </div>
+
+
+  <div id="practicalExercisesContainer">
+  </div>
+
+
+  <div class="quiz-actions">
+
+    <button
+      id="practicalExercisesBackBtn"
+      class="ghost">
+
+      Volver
+
+    </button>
+
+    <button
+  id="practicalExercisesPdfBtn"
+  class="primary">
+
+  📄 Generar PDF
+
+</button>
+
+  </div>
+
+</section>
+<!-- ========================================= -->
+<!-- EJERCICIOS PRÁCTICOS -->
+<!-- ========================================= -->
+
+<section
+  id="practicalExercisesSectionLegacy"
+  class="card hidden">
+
+  <div class="quiz-header">
+
+    <div>
+
+      <p
+        id="practicalExercisesSubjectLegacy"
+        class="subject-label">
+      </p>
+
+      <h2>
+        Ejercicios prácticos
+      </h2>
+
+    </div>
+
+  </div>
+
+  <div id="practicalExercisesContainerLegacy">
+  </div>
+
+  <div class="quiz-actions">
+
+    <button
+      id="practicalExercisesBackBtnLegacy"
+      class="ghost">
+
+      Volver
+
+    </button>
+
+  </div>
+
+ </section>
+
+
+
+    <!-- ============================= -->
+    <!-- CONTENIDO DE UNA TAREA -->
+    <!-- ============================= -->
+
+    <section
+      id="contentSection"
+      class="hidden">
+
+
+      <div class="card">
+
+
+        <div class="content-header">
+
+
+          <div>
+
+            <p class="subject-label">
+              Contenido
+            </p>
+
+            <h2 id="contentTitle">
+              Contenido
+            </h2>
+
+          </div>
+
+
+
+          <button
+            id="contentBackBtn"
+            class="ghost">
+
+            Volver
+
+          </button>
+
+
+        </div>
+
+
+      </div>
+
+
+
+      <!--
+        JavaScript colocará aquí
+        los diferentes temas
+      -->
+
+      <div
+        id="topicsContainer"
+        class="topics-container">
+      </div>
+
+
+ </section>
+
+
+
+    <!-- ============================= -->
+    <!-- EJERCICIOS / PREGUNTAS -->
+    <!-- ============================= -->
+
+    <section
+      id="quizSection"
+      class="card hidden">
+
+
+      <div class="quiz-header">
+
+
+        <div>
+
+          <p
+            id="quizSubject"
+            class="subject-label">
+          </p>
+
+          <h2 id="questionText">
+          </h2>
+
+        </div>
+
+
+
+        <div class="progress-info">
+
+          <span id="questionCounter">
+          </span>
+
+        </div>
+
+
+      </div>
+
+
+
+      <!-- BARRA DE PROGRESO -->
+
+      <div class="progress-bar">
+
+        <div id="progressFill">
+        </div>
+
+      </div>
+
+
+
+      <!-- RESPUESTAS -->
+
+      <div
+        id="answersContainer"
+        class="answers">
+      </div>
+
+
+
+      <!-- RETROALIMENTACIÓN -->
+
+      <p
+        id="feedback"
+        class="feedback">
+      </p>
+
+
+
+      <div class="quiz-actions">
+
+
+        <button
+          id="backBtn"
+          class="ghost">
+
+          Volver
+
+        </button>
+
+
+        <button
+          id="nextBtn"
+          class="primary hidden">
+
+          Siguiente
+
+        </button>
+
+
+      </div>
+
+
+    </section>
+
+   
+
+
+    <!-- ============================= -->
+    <!-- RESULTADOS -->
+    <!-- ============================= -->
+
+    <section
+      id="resultSection"
+      class="card result-card hidden">
+
+
+      <div
+        id="resultEmoji"
+        class="result-emoji">
+
+        🎉
+
+      </div>
+
+
+      <h2>
+        ¡Ejercicio terminado!
+      </h2>
+
+
+      <p id="resultMessage">
+      </p>
+
+
+
+      <div class="final-score">
+
+        <span>
+          Tu resultado
+        </span>
+
+        <strong id="finalScore">
+          0%
+        </strong>
+
+      </div>
+
+
+
+      <div class="result-actions">
+
+
+        <button
+          id="retryBtn"
+          class="primary">
+
+          Intentar de nuevo
+
+        </button>
+
+
+        <button
+          id="homeBtn"
+          class="ghost">
+
+          Volver al inicio
+
+        </button>
+
+
+      </div>
+
+
+    </section>
+
+
+  </main>
+
+
+
+  <!-- ============================= -->
+  <!-- PIE DE PÁGINA -->
+  <!-- ============================= -->
+
+  <footer>
+
+      <p> y conoceréis la verdad, y la verdad os hará libres. Juan 8:32</p>
+
+    <p>
+      Josué Alvarez - Ingenieria en Sistemas.
+    </p>
+    <p>Aula Interactiva | BURBUJAS | Version BETA 1.1.3. </p>
+
+
+
+  </footer>
+
+
+
+
+<img 
+id="logolng"
+src="imagenes/logolng.png"
+alt="logo del colegio"
+style="display: none;"
+>
+
+
+  <!-- JAVASCRIPT -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+  <script src="script.js"></script>
+</body>
+
+</html>
