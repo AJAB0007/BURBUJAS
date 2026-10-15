@@ -1211,6 +1211,11 @@ const subjectNames = {
 
 };
 
+const API_BASE_URL =
+  window.location.hostname.endsWith("github.io")
+    ? "https://burubujas-tic-7rie.vercel.app"
+    : "http://localhost:8080";
+
 
 const exerciseStatus = { 
   tarea_1: true, 
@@ -1442,6 +1447,9 @@ const quizSection =
 const resultSection =
   document.getElementById("resultSection");
 
+const ideasSection =
+  document.getElementById("ideasSection");
+
 
 const contentBtn =
   document.getElementById("contentBtn");
@@ -1451,6 +1459,12 @@ const exerciseBtn =
 
 const spreadsheetBtn =
   document.getElementById("spreadsheetBtn");
+
+const ideasBtn =
+  document.getElementById("ideasBtn");
+
+const ideasBackBtn =
+  document.getElementById("ideasBackBtn");
 
 const taskBackBtn =
   document.getElementById("taskBackBtn");
@@ -1462,6 +1476,24 @@ const contentBackBtn =
 
 const studentNameInput =
   document.getElementById("studentName");
+
+const studentNameLabel =
+  document.getElementById("studentNameLabel");
+
+const studentEmailInput =
+  document.getElementById("studentEmail");
+
+const studentPasswordInput =
+  document.getElementById("studentPassword");
+
+const emailField =
+  document.getElementById("emailField");
+
+const loginModeBtn =
+  document.getElementById("loginModeBtn");
+
+const registerModeBtn =
+  document.getElementById("registerModeBtn");
 
 const studentGradeInput =
   document.getElementById("studentGrade");
@@ -1493,6 +1525,30 @@ const retryBtn =
 
 const homeBtn =
   document.getElementById("homeBtn");
+
+const ideaForm =
+  document.getElementById("ideaForm");
+
+const ideaIdInput =
+  document.getElementById("ideaId");
+
+const ideaTitleInput =
+  document.getElementById("ideaTitle");
+
+const ideaContentInput =
+  document.getElementById("ideaContent");
+
+const saveIdeaBtn =
+  document.getElementById("saveIdeaBtn");
+
+const cancelIdeaBtn =
+  document.getElementById("cancelIdeaBtn");
+
+const ideasMessage =
+  document.getElementById("ideasMessage");
+
+const ideasList =
+  document.getElementById("ideasList");
 
 
 const integrativeBtn =
@@ -1609,6 +1665,12 @@ const spreadsheetHeaderRow =
 
 let student = null;
 
+let authMode = "login";
+
+let authToken = "";
+
+let currentArticles = [];
+
 let currentSubject = "";
 
 let currentQuestion = 0;
@@ -1650,6 +1712,34 @@ enterBtn.addEventListener(
   "click",
   enterStudent
 );
+
+loginModeBtn.addEventListener(
+  "click",
+  () => setAuthMode("login")
+);
+
+registerModeBtn.addEventListener(
+  "click",
+  () => setAuthMode("register")
+);
+
+studentPasswordInput.addEventListener(
+  "keydown",
+  event => {
+    if (event.key === "Enter") enterStudent();
+  }
+);
+
+ideasBtn.addEventListener("click", showIdeas);
+
+ideasBackBtn.addEventListener(
+  "click",
+  () => openTask(currentSubject)
+);
+
+ideaForm.addEventListener("submit", saveIdea);
+
+cancelIdeaBtn.addEventListener("click", resetIdeaForm);
 
 
 logoutBtn.addEventListener(
@@ -4018,7 +4108,7 @@ async function generateIntegrativePDF() {
 
 
     doc.text(
-      `Nombre: ${student.name}`,
+      `Username: ${student.name}`,
       20,
       30
     );
@@ -4758,58 +4848,285 @@ contentBackBtn.addEventListener("click", () => {
 });
 
 
+async function showIdeas() {
+
+  taskMenuSection.classList.add("hidden");
+  ideasSection.classList.remove("hidden");
+  document.getElementById("ideasTitle").textContent =
+    `Tus Ideas - ${subjectNames[currentSubject]}`;
+  resetIdeaForm();
+  await loadIdeas();
+}
+
+async function loadIdeas() {
+
+  ideasMessage.className = "ideas-message";
+  ideasMessage.textContent = "Cargando artículos...";
+  ideasList.replaceChildren();
+
+  try {
+    const data = await apiRequest(
+      `/api/articles?task=${encodeURIComponent(currentSubject)}`
+    );
+    currentArticles = data.articles;
+    ideasMessage.textContent = "";
+    renderIdeas();
+  } catch (error) {
+    ideasMessage.classList.add("error");
+    ideasMessage.textContent = error.message;
+  }
+}
+
+function renderIdeas() {
+
+  ideasList.replaceChildren();
+
+  if (currentArticles.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "muted ideas-empty";
+    empty.textContent = "Todavía no has creado artículos para esta tarea.";
+    ideasList.appendChild(empty);
+    return;
+  }
+
+  currentArticles.forEach(article => {
+    const card = document.createElement("article");
+    card.className = "idea-card";
+
+    const heading = document.createElement("div");
+    heading.className = "idea-card-header";
+
+    const title = document.createElement("h3");
+    title.textContent = article.titulo;
+
+    const date = document.createElement("time");
+    date.textContent = new Date(article.actualizado_en).toLocaleString("es-GT");
+
+    const content = document.createElement("p");
+    content.className = "idea-card-content";
+    content.textContent = article.contenido;
+
+    const actions = document.createElement("div");
+    actions.className = "idea-card-actions";
+
+    const editButton = document.createElement("button");
+    editButton.className = "ghost";
+    editButton.type = "button";
+    editButton.textContent = "Modificar";
+    editButton.addEventListener("click", () => editIdea(article));
+
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "danger-btn";
+    deleteButton.type = "button";
+    deleteButton.textContent = "Eliminar";
+    deleteButton.addEventListener("click", () => deleteIdea(article));
+
+    heading.append(title, date);
+    actions.append(editButton, deleteButton);
+    card.append(heading, content, actions);
+    ideasList.appendChild(card);
+  });
+}
+
+function editIdea(article) {
+
+  ideaIdInput.value = article.id;
+  ideaTitleInput.value = article.titulo;
+  ideaContentInput.value = article.contenido;
+  saveIdeaBtn.textContent = "Guardar cambios";
+  cancelIdeaBtn.classList.remove("hidden");
+  ideaTitleInput.focus();
+  ideaForm.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function resetIdeaForm() {
+
+  ideaForm.reset();
+  ideaIdInput.value = "";
+  saveIdeaBtn.textContent = "Publicar artículo";
+  cancelIdeaBtn.classList.add("hidden");
+}
+
+async function saveIdea(event) {
+
+  event.preventDefault();
+  const id = ideaIdInput.value;
+  const title = ideaTitleInput.value.trim();
+  const content = ideaContentInput.value.trim();
+
+  if (!title || !content) {
+    ideasMessage.className = "ideas-message error";
+    ideasMessage.textContent = "Escriba el título y el contenido del artículo.";
+    return;
+  }
+
+  saveIdeaBtn.disabled = true;
+  ideasMessage.className = "ideas-message";
+  ideasMessage.textContent = id ? "Guardando cambios..." : "Publicando artículo...";
+
+  try {
+    await apiRequest(`/api/articles${id ? `?id=${encodeURIComponent(id)}` : ""}`, {
+      method: id ? "PATCH" : "POST",
+      body: JSON.stringify({ task: currentSubject, title, content })
+    });
+    resetIdeaForm();
+    await loadIdeas();
+  } catch (error) {
+    ideasMessage.className = "ideas-message error";
+    ideasMessage.textContent = error.message;
+  } finally {
+    saveIdeaBtn.disabled = false;
+  }
+}
+
+async function deleteIdea(article) {
+
+  if (!confirm(`¿Desea eliminar el artículo "${article.titulo}"?`)) return;
+
+  try {
+    await apiRequest(`/api/articles?id=${encodeURIComponent(article.id)}`, {
+      method: "DELETE"
+    });
+    await loadIdeas();
+  } catch (error) {
+    ideasMessage.className = "ideas-message error";
+    ideasMessage.textContent = error.message;
+  }
+}
+
+
 
 /* =====================================================
    INGRESAR AL SISTEMA
 ===================================================== */
 
-function enterStudent() {
+function setAuthMode(mode) {
 
-  const name =
+  authMode = mode;
+  const registering = mode === "register";
+
+  emailField.classList.toggle("hidden", !registering);
+  loginModeBtn.classList.toggle("active", !registering);
+  registerModeBtn.classList.toggle("active", registering);
+  studentNameLabel.textContent = registering
+    ? "Username:"
+    : "Username o email:";
+  studentNameInput.placeholder = registering
+    ? "Ej. ana_garcia"
+    : "Username o correo electrónico";
+  studentNameInput.minLength = registering ? 3 : 1;
+  studentNameInput.maxLength = registering ? 90 : 100;
+  studentPasswordInput.autocomplete = registering
+    ? "new-password"
+    : "current-password";
+  enterBtn.textContent = registering
+    ? "Crear cuenta"
+    : "Iniciar sesión";
+  loginError.textContent = "";
+}
+
+async function apiRequest(path, options = {}) {
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...options.headers
+    }
+  });
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(data.error || "No se pudo completar la solicitud.");
+  }
+
+  return data;
+}
+
+async function enterStudent() {
+
+  const identifier =
     studentNameInput.value.trim();
-
+  const email =
+    studentEmailInput.value.trim();
+  const password =
+    studentPasswordInput.value;
   const grade =
     studentGradeInput.value.trim();
-  
-  const code = 
+  const code =
     studentCodeInput.value.trim();
-  
-  const teacher = 
+  const teacher =
     teacherNameInput.value.trim();
 
-  if (!name || !grade || !code || !teacher) {
-
+  if (!identifier || !password || !grade || !code || !teacher) {
     loginError.textContent =
       "Por favor complete todos los datos que se le piden.";
-
     return;
   }
 
+  if (
+    authMode === "register" &&
+    !/^[\p{L}\p{N}._-]{3,90}$/u.test(identifier)
+  ) {
+    loginError.textContent =
+      "El username debe tener de 3 a 90 caracteres, sin espacios. Use letras, números, punto, guion o guion bajo.";
+    studentNameInput.focus();
+    return;
+  }
 
-  student = {
+  if (authMode === "register" && !email) {
+    loginError.textContent =
+      "Ingrese su correo electrónico para crear la cuenta.";
+    studentEmailInput.focus();
+    return;
+  }
 
-    name: name,
+  if (password.length < 8) {
+    loginError.textContent =
+      "La contraseña debe tener al menos 8 caracteres.";
+    studentPasswordInput.focus();
+    return;
+  }
 
-    grade: grade, 
+  enterBtn.disabled = true;
+  enterBtn.textContent = authMode === "register"
+    ? "Creando cuenta..."
+    : "Ingresando...";
 
-    code: code,
+  try {
+    const data = await apiRequest("/api/auth", {
+      method: "POST",
+      body: JSON.stringify(
+        authMode === "register"
+          ? { action: "register", username: identifier, email, password }
+          : { action: "login", identifier, password }
+      )
+    });
 
-    teacher: teacher
+    student = {
+      id: data.user.id,
+      name: data.user.username,
+      email: data.user.email,
+      grade,
+      code,
+      teacher
+    };
+    authToken = data.token;
 
-  };
-
-
-  localStorage.setItem(
-    "aulaStudent",
-    JSON.stringify(student)
-  );
-
-
-  loginError.textContent = "";
-
-
-  showDashboard();
-
+    localStorage.setItem("aulaStudent", JSON.stringify(student));
+    localStorage.setItem("aulaAuthToken", authToken);
+    studentPasswordInput.value = "";
+    loginError.textContent = "";
+    showDashboard();
+  } catch (error) {
+    loginError.textContent = error.message;
+  } finally {
+    enterBtn.disabled = false;
+    enterBtn.textContent = authMode === "register"
+      ? "Crear cuenta"
+      : "Iniciar sesión";
+  }
 }
 
 
@@ -4849,6 +5166,7 @@ function showDashboard() {
     "hidden"
   );
 
+  ideasSection.classList.add("hidden");
   integrativeSection.classList.add("hidden");
   spreadsheetSection.classList.add("hidden");
   document
@@ -4912,6 +5230,7 @@ function openTask(subject) {
     "hidden"
   );
 
+  ideasSection.classList.add("hidden");
   integrativeSection.classList.add("hidden");
   spreadsheetSection.classList.add("hidden");
   document
@@ -5826,7 +6145,7 @@ function renderHistory() {
 
   doc.setFontSize(11);
   doc.text(
-    `Nombre: ${attempt.name}`,
+    `Username: ${attempt.name}`,
     20, 
     30 //34
 
@@ -6164,10 +6483,15 @@ try {
 function logout() {
 
   student = null;
+  authToken = "";
 
 
   localStorage.removeItem(
     "aulaStudent"
+  );
+
+  localStorage.removeItem(
+    "aulaAuthToken"
   );
 
 
@@ -6195,6 +6519,10 @@ function logout() {
     "hidden"
   );
 
+  ideasSection.classList.add("hidden");
+  integrativeSection.classList.add("hidden");
+  spreadsheetSection.classList.add("hidden");
+
 
   loginSection.classList.remove(
     "hidden"
@@ -6208,32 +6536,56 @@ function logout() {
 
   studentNameInput.value = "";
 
+  studentEmailInput.value = "";
+
+  studentPasswordInput.value = "";
+
   studentGradeInput.value = "";
 
   studentCodeInput.value = ""; 
 
   teacherNameInput.value = ""; 
 
+  setAuthMode("login");
+
 }
 
 
-function restoreSession() {
+async function restoreSession() {
 
   const savedStudent =
     localStorage.getItem(
       "aulaStudent"
     );
 
-
-  if (savedStudent) {
-
-    student =
-      JSON.parse(
-        savedStudent
-      );
+  const savedToken =
+    localStorage.getItem("aulaAuthToken");
 
 
-    showDashboard();
+  if (savedStudent && savedToken) {
+
+    try {
+      student = JSON.parse(savedStudent);
+      authToken = savedToken;
+
+      const data = await apiRequest("/api/auth", {
+        method: "POST",
+        body: JSON.stringify({ action: "verify" })
+      });
+
+      student.id = data.user.id;
+      student.name = data.user.username;
+      student.email = data.user.email;
+      localStorage.setItem("aulaStudent", JSON.stringify(student));
+      showDashboard();
+    } catch {
+      student = null;
+      authToken = "";
+      localStorage.removeItem("aulaStudent");
+      localStorage.removeItem("aulaAuthToken");
+      loginError.textContent =
+        "La sesión venció. Inicie sesión nuevamente.";
+    }
 
   }
 
@@ -6716,6 +7068,7 @@ document.addEventListener(
     true
 );
 
+setAuthMode("login");
 restoreSession();
 
 
