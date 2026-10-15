@@ -101,15 +101,43 @@
         Escribe tus datos para comenzar.
       </p>
 
+      <div class="auth-tabs" role="group" aria-label="Tipo de acceso">
+        <button id="loginModeBtn" class="auth-tab active" type="button">Iniciar sesión</button>
+        <button id="registerModeBtn" class="auth-tab" type="button">Crear cuenta</button>
+      </div>
 
-      <label for="studentName">
-        Nombre completo:
+      <label id="studentNameLabel" for="studentName">
+        Username o email:
       </label>
 
       <input
         id="studentName"
         type="text"
-        placeholder="Ej. Ana María García López">
+        placeholder="Ej. ana_garcia"
+        minlength="3"
+        maxlength="90"
+        autocomplete="username"
+        autocapitalize="none"
+        spellcheck="false">
+
+      <div id="emailField" class="hidden">
+        <label for="studentEmail">Correo electrónico:</label>
+        <input
+          id="studentEmail"
+          type="email"
+          placeholder="Ej. ana@correo.com"
+          maxlength="100"
+          autocomplete="email">
+      </div>
+
+      <label for="studentPassword">Contraseña:</label>
+      <input
+        id="studentPassword"
+        type="password"
+        placeholder="Mínimo 8 caracteres"
+        minlength="8"
+        maxlength="72"
+        autocomplete="current-password">
 
 
       <label for="studentGrade">
@@ -149,7 +177,7 @@
         id="enterBtn"
         class="primary">
 
-        Ingresar
+        Iniciar sesión
 
       </button>
 
@@ -403,6 +431,12 @@
           <p>Practica fórmulas, tablas y gráficos.</p>
         </button>
 
+        <button id="ideasBtn" class="option-card">
+          <span class="option-icon">💡</span>
+          <h3>Tus Ideas</h3>
+          <p>Crea, modifica y elimina tus propios artículos.</p>
+        </button>
+
 
 
       </div>
@@ -418,6 +452,34 @@
       </button>
 
 
+    </section>
+
+    <section id="ideasSection" class="card hidden">
+      <div class="ideas-header">
+        <div>
+          <p class="subject-label">Tus Ideas</p>
+          <h2 id="ideasTitle">Artículos</h2>
+        </div>
+        <button id="ideasBackBtn" class="ghost" type="button">Volver</button>
+      </div>
+
+      <form id="ideaForm" class="idea-form">
+        <input id="ideaId" type="hidden">
+
+        <label for="ideaTitle">Título del artículo</label>
+        <input id="ideaTitle" type="text" maxlength="150" required>
+
+        <label for="ideaContent">Contenido</label>
+        <textarea id="ideaContent" maxlength="10000" required></textarea>
+
+        <div class="idea-form-actions">
+          <button id="saveIdeaBtn" class="primary" type="submit">Publicar artículo</button>
+          <button id="cancelIdeaBtn" class="ghost hidden" type="button">Cancelar edición</button>
+        </div>
+      </form>
+
+      <p id="ideasMessage" class="ideas-message" aria-live="polite"></p>
+      <div id="ideasList" class="ideas-list"></div>
     </section>
 
 
