@@ -12,11 +12,13 @@ services:
     restart: always
 
   backend:
-    image: node:18-alpine
+    image: node:22-alpine
     container_name: backend-burbujas
     working_dir: /app
     volumes:
       - .:/app
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-sk-proj-placeholder-key-para-evitar-crash}
     command: sh -c "npm install && node server.js"
     ports:
       - "3000:3000"
