@@ -1214,7 +1214,8 @@ const subjectNames = {
 const API_BASE_URL =
   window.location.hostname.endsWith("github.io")
     ? "https://burubujas-tic-7rie.vercel.app"
-    : "http://localhost:8080";
+    : "/api";
+    //: "http://localhost:8080";
 
 
 const exerciseStatus = { 
