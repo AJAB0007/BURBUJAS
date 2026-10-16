@@ -1211,12 +1211,12 @@ const subjectNames = {
 
 };
 
-const API_BASE_URL =
-  window.location.hostname.endsWith("github.io")
-    ? "https://burubujas-tic-7rie.vercel.app"
-    : "/api";
-    //: "http://localhost:8080";
+//const API_BASE_URL = "http://35.255.250.97/api";
 
+const API_BASE_URL =
+  window.location.hostname.endsWith("github.io") || window.location.hostname.endsWith("vercel.app")
+    ? "https://burubujas-tic-7rie.vercel.app"
+    : "http://35.255.250.97/api";
 
 const exerciseStatus = { 
   tarea_1: true, 
