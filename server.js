@@ -1,20 +1,27 @@
 import express from 'express';
 import authHandler from './api/auth.js';
 import articlesHandler from './api/articles.js';
-import chatHandler from './api/chat.js';
 
 const app = express();
-
-// Permite a Express procesar datos enviados en formato JSON (como el formulario de registro)
 app.use(express.json());
 
-// Vincula las rutas /api con las funciones de tu carpeta api/
-app.all('/api/auth', (req, res) => authHandler(req, res));
-app.all('/api/articles', (req, res) => articlesHandler(req, res));
-app.all('/api/chat', (req, res) => chatHandler(req, res));
-
-// Define el puerto interno donde escuchará la API
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`Servidor API corriendo en el puerto ${PORT}`);
+app.all('/api/auth', async (req, res) => {
+  try {
+    await authHandler(req, res);
+  } catch (error) {
+    console.error('Error en /api/auth:', error);
+    if (!res.headersSent) res.status(500).json({ error: error.message });
+  }
 });
+
+app.all('/api/articles', async (req, res) => {
+  try {
+    await articlesHandler(req, res);
+  } catch (error) {
+    console.error('Error en /api/articles:', error);
+    if (!res.headersSent) res.status(500).json({ error: error.message });
+  }
+});
+
+const PORT = 3000;
+app.listen(PORT, () => console.log(`Servidor API corriendo en el puerto ${PORT}`));
