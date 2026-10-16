@@ -5027,15 +5027,17 @@ function setAuthMode(mode) {
 }
 
 async function apiRequest(path, options = {}) {
+    // Normaliza la URL para corregir cualquier duplicación de /api
+    const url = `${API_BASE_URL}${path}`.replace('/api/api', '/api');
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
-      ...options.headers
-    }
-  });
+    const response = await fetch(url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+            ...options.headers
+        }
+    });
   const data = await response.json().catch(() => ({}));
 
   if (!response.ok) {
